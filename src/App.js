@@ -17,8 +17,18 @@ class BooksApp extends React.Component {
         read: []
     }
 
-    async componentDidMount() {
+    componentDidMount() {
+        return this.refreshBooks();
+    }
+
+    async refreshBooks() {
         const books = await BooksAPI.getAll();
+
+        this.setState({
+            currentlyReading: [],
+            wantToRead: [],
+            read: []
+        });
 
         books.forEach(book => {
             switch(book.shelf) {
@@ -68,9 +78,9 @@ class BooksApp extends React.Component {
                 </div>
                 <div className="list-books-content">
                     <div>
-                        <Bookshelf title="Currently Reading" books={this.state.currentlyReading} />
-                        <Bookshelf title="Want to Read" books={this.state.wantToRead} />
-                        <Bookshelf title="Read" books={this.state.read} />
+                        <Bookshelf onChange={() => this.refreshBooks()} title="Currently Reading" books={this.state.currentlyReading} />
+                        <Bookshelf onChange={() => this.refreshBooks()} title="Want to Read" books={this.state.wantToRead} />
+                        <Bookshelf onChange={() => this.refreshBooks()} title="Read" books={this.state.read} />
                     </div>
                 </div>
                 <div className="open-search">

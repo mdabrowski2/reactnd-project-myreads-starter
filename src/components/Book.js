@@ -7,13 +7,14 @@ const Book = ({ book, updateShelf }) => {
         title,
         imageLinks: {
             smallThumbnail
-        }
+        },
+        shelf
     } = book;
 
     return <div className="book">
         <div className="book-top">
             <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url("${smallThumbnail}")` }}></div>
-            <ActionMenu updateShelf={updateShelf} />
+            <ActionMenu updateShelf={updateShelf} currentShelf={shelf} />
         </div>
         <div className="book-title">{title}</div>
         <div className="book-authors">{authors.join(', ')}</div>

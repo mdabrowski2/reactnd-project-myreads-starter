@@ -1,28 +1,45 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import * as BooksAPI from '../BooksAPI';
+import Book from '../components/Book';
 
 class SearchPage extends React.Component {
     constructor() {
         super();
 
         this.state = {
-            fetchedBooks: []
+            fetchedBooks: [],
+            inputTimeout: null
         };
     }
 
-    async searchBooks(query) {
-        if (!query) {
-            return;
-        }
+    searchBooks(query) {
+        clearTimeout(this.state.inputTimeout);
 
-        const response = await BooksAPI.search(query)
+        const timeoutId = setTimeout(async () => {
+            if (!query) {
+                this.setState({
+                    fetchedBooks: []
+                });
+                return;
+            }
+    
+            const books = await BooksAPI.search(query);
+    
+            if (Array.isArray(books)) {
+                this.setState({
+                    fetchedBooks: books
+                });
+            } else {
+                this.setState({
+                    fetchedBooks: null
+                });
+            }
+        }, 500);
 
-        if (Array.isArray(response.books)) {
-            this.setState({
-                fetchedBooks: response.books
-            });
-        }
+        this.setState({
+            inputTimeout:  timeoutId
+        });
     }
 
     render() {
@@ -45,7 +62,11 @@ class SearchPage extends React.Component {
                 </div>
             </div>
             <div className="search-books-results">
-                <ol className="books-grid"></ol>
+                <ol className="books-grid">
+                    {this.state.fetchedBooks
+                        ? this.state.fetchedBooks.map((book, index) => <li key={index}><Book book={book}></Book></li>)
+                        : 'No results found'}
+                </ol>
             </div>
         </div>
     }

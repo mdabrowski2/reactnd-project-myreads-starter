@@ -20,28 +20,31 @@ class MainPage extends React.Component {
 
     async refreshBooks() {
         const books = await BooksAPI.getAll();
-
-        this.setState({
-            currentlyReading: [],
-            wantToRead: [],
-            read: []
-        });
+        const currentlyReading = [];
+        const wantToRead = [];
+        const read = [];
 
         books.forEach(book => {
             switch(book.shelf) {
                 case 'currentlyReading':
-                    this.setState({ currentlyReading: this.state.currentlyReading.concat(book) })
+                    currentlyReading.push(book);
                     break;
                 case 'wantToRead':
-                    this.setState({ wantToRead: this.state.wantToRead.concat(book) })
+                    wantToRead.push(book);
                     break;
                 case 'read':
-                    this.setState({ read: this.state.read.concat(book) })
+                    read.push(book);
                     break;
                 default:
                     // no default case
             }
-        })
+        });
+
+        this.setState({
+            currentlyReading,
+            wantToRead,
+            read
+        });
     }
 
     render() {

@@ -3,13 +3,12 @@ import ActionMenu from './ActionMenu';
 
 const Book = ({ book, updateShelf }) => {
     const {
-        authors,
+        authors = [],
         title,
-        imageLinks: {
-            smallThumbnail
-        },
+        imageLinks = {},
         shelf
     } = book;
+    const { smallThumbnail } = imageLinks;
 
     return <div className="book">
         <div className="book-top">

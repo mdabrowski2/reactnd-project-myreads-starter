@@ -23,9 +23,23 @@ class SearchPage extends React.Component {
                 });
                 return;
             }
-    
-            const books = await BooksAPI.search(query);
-    
+
+            let books = await BooksAPI.search(query);
+            const myBooks = await BooksAPI.getAll();
+
+            books = books.map(book => {
+                const bookOnShelf = myBooks.find(myBook => myBook.id === book.id);
+
+                if (bookOnShelf) {
+                    return {
+                        ...book,
+                        shelf: bookOnShelf.shelf
+                    };
+                }
+
+                return book;
+            });
+
             if (Array.isArray(books)) {
                 this.setState({
                     fetchedBooks: books
@@ -64,7 +78,7 @@ class SearchPage extends React.Component {
             <div className="search-books-results">
                 <ol className="books-grid">
                     {this.state.fetchedBooks
-                        ? this.state.fetchedBooks.map((book, index) => <li key={index}><Book book={book}></Book></li>)
+                        ? this.state.fetchedBooks.map((book, index) => <li key={index}><Book book={book} updateShelf={shelf => BooksAPI.update(book, shelf)}></Book></li>)
                         : 'No results found'}
                 </ol>
             </div>
